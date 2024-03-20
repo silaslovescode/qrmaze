@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <meta charset="utf-8">
+    <title>Move the Cube Within the Plane</title>
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
+</head>
+<body>
+    <a-scene>
+        <a-assets>
+            <img id="grid" src="https://raw.githubusercontent.com/silaslovescode/i/main/1.png">
+            <a-assets>
+                <a-asset-item id="scene" src="1.gltf"></a-asset-item>
+            </a-assets>
+        </a-assets>
+
+        <!-- Add a box (our cube) -->
+        <a-box id="rubiks-cube" color="#FFFFFF" position="0 1 0" wasd-controls></a-box>
+
+        <!-- Add a ground plane -->
+        <a-plane src="#grid" transparent="true" rotation="-90 0 0" width="100" height="100"></a-plane>
+
+        <!-- Ambient Light -->
+        <a-entity light="type: ambient; color: #CCC; intensity: 0.5" rotation="-90 0 0"></a-entity>
+
+        <!-- Directional Light -->
+        <a-entity light="type: directional; color: white; intensity: 5; position: -0.5 1 1"></a-entity>
+
+        <!-- Add a camera that follows the cube -->
+        <a-entity id="camera" camera position="5 100 5" rotation="-90 0 0"></a-entity>
+
+        <!-- Add a sky element to create a 3D space -->
+        <a-sky color="#ECECEC"></a-sky>
+
+        <!-- Rotate the cube based on keyboard input -->
+        <script>
+            const cube = document.querySelector('#rubiks-cube');
+            const camera = document.querySelector('#camera');
+
+            // Define the boundaries of the plane
+            const minX = -49;
+            const maxX = 49;
+            const minZ = -49;
+            const maxZ = 49;
+
+            // Use A-Frame's tick function for smoother animation
+            AFRAME.registerComponent('follow-cube', {
+                tick: function () {
+                    // Make the camera follow the cube with an offset
+                    camera.object3D.position.x = cube.object3D.position.x + 5;
+                    camera.object3D.position.z = cube.object3D.position.z + 5;
+
+                    // Check the boundaries of the plane
+                    if (cube.object3D.position.x < minX) cube.object3D.position.x = minX;
+                    if (cube.object3D.position.x > maxX) cube.object3D.position.x = maxX;
+                    if (cube.object3D.position.z < minZ) cube.object3D.position.z = minZ;
+                    if (cube.object3D.position.z > maxZ) cube.object3D.position.z = maxZ;
+                }
+            });
+
+            // Add the follow-cube component to the scene
+            document.querySelector('a-scene').setAttribute('follow-cube', '');
+        </script>
+    </a-scene>
+</body>
+</html>
